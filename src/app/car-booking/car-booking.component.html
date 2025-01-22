@@ -1,0 +1,73 @@
+<form [formGroup]="carForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="carName">Nom de la voiture</label>
+      <input id="carName" formControlName="carName" type="text" />
+      <div *ngIf="carForm.get('carName')?.touched && carForm.get('carName')?.invalid">
+        <small class="error">Le nom de la voiture est requis.</small>
+      </div>
+    </div>
+  
+    <div>
+      <label for="reservationDate">Date de réservation</label>
+      <input id="reservationDate" formControlName="reservationDate" type="date" />
+      <div *ngIf="carForm.get('reservationDate')?.touched && carForm.get('reservationDate')?.hasError('required')">
+        <small class="error">La date de réservation est requise.</small>
+      </div>
+      <div *ngIf="carForm.get('reservationDate')?.touched && carForm.get('reservationDate')?.hasError('notFuture')">
+        <small class="error">La date doit être dans le futur.</small>
+      </div>
+    </div>
+  
+    <div>
+      <label for="startTime">Heure de début</label>
+      <input id="startTime" formControlName="startTime" type="time" />
+      <div *ngIf="carForm.get('startTime')?.touched && carForm.get('startTime')?.invalid">
+        <small class="error">Veuillez renseigner l'heure de début.</small>
+      </div>
+    </div>
+  
+    <div>
+      <label for="duration">Durée (heures)</label>
+      <input id="duration" formControlName="duration" type="number" min="1" max="8" />
+      <div *ngIf="carForm.get('duration')?.touched && carForm.get('duration')?.hasError('required')">
+        <small class="error">La durée est requise.</small>
+      </div>
+      <div *ngIf="carForm.get('duration')?.touched && carForm.get('duration')?.hasError('min')">
+        <small class="error">La durée minimale est 1 heure.</small>
+      </div>
+      <div *ngIf="carForm.get('duration')?.touched && carForm.get('duration')?.hasError('max')">
+        <small class="error">La durée maximale est 8 heures.</small>
+      </div>
+    </div>
+  
+    <div>
+      <label for="participants">Nombre de passagers</label>
+      <input id="participants" formControlName="participants" type="number" max="50" />
+      <div *ngIf="carForm.get('participants')?.touched && carForm.get('participants')?.hasError('required')">
+        <small class="error">Le nombre de passagers est requis.</small>
+      </div>
+      <div *ngIf="carForm.get('participants')?.touched && carForm.get('participants')?.hasError('max')">
+        <small class="error">Le nombre maximal de passagers est 50.</small>
+      </div>
+    </div>
+  
+    <div>
+      <label>Options supplémentaires :</label>
+      <div formGroupName="extras">
+        <div *ngFor="let option of availableExtras">
+          <input type="checkbox" [formControlName]="option.name" [id]="option.name" />
+          <label [for]="option.name">{{ option.label }}</label>
+        </div>
+      </div>
+      <div *ngIf="formInvalidError && getSelectedExtras().length === 0">
+        <small class="error">Veuillez sélectionner au moins une option.</small>
+      </div>
+    </div>
+  
+    <div *ngIf="formInvalidError" class="error">
+      Veuillez corriger les erreurs dans le formulaire.
+    </div>
+  
+    <button type="submit">Réserver</button>
+  </form>
+  
